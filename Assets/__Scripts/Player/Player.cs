@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     private Rigidbody2D _rigidbody;
     private GroundDetec _groundDetec;
     private Animator _animator;
+    private SpriteRenderer _spriteRenderer;
 
     public event Action Death;
 
@@ -20,6 +21,7 @@ public class Player : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody2D>();
         _groundDetec = GetComponentInChildren<GroundDetec>();
         _animator = GetComponent<Animator>();
+        _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     private void Update()
@@ -31,21 +33,26 @@ public class Player : MonoBehaviour
         if (Input.GetKey(KeyCode.A))
         {
             velcocity.x = -_speed ;
+            _spriteRenderer.flipX = true;
+            _animator.SetBool("Run", true);
         }
-        if(Input.GetKey(KeyCode.D)) 
+        else if(Input.GetKey(KeyCode.D)) 
         {
             velcocity.x = _speed;
-        }
+            _spriteRenderer.flipX = false;
+            _animator.SetBool("Run", true);
+        } else _animator.SetBool("Run", false);
+
         if (Input.GetKey(KeyCode.W))
         {
             if (_groundDetec.IsGrounded)
             {
                 velcocity.y = _jumpSpeed;
-            }
+                _animator.SetBool("Jump", true);
+            } else _animator.SetBool("Jump", false);
         }
 
         _rigidbody.velocity = velcocity;
-
     }
 
     private void OnEnable()
