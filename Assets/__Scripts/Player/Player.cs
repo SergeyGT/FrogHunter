@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
     private Animator _animator;
     private SpriteRenderer _spriteRenderer;
 
-    public event Action Death;
+    public static event Action Death;
 
     private void Awake()
     {
