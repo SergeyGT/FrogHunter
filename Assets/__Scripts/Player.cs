@@ -8,10 +8,12 @@ public class Player : MonoBehaviour
     [SerializeField] private float _jumpSpeed = 3f;
 
     private Rigidbody2D _rigidbody;
+    private GroundDetec _groundDetec;
 
     private void Start()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
+        _groundDetec = GetComponentInChildren<GroundDetec>();
     }
 
     private void Update()
@@ -30,7 +32,10 @@ public class Player : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.W))
         {
-            velcocity.y = _jumpSpeed;
+            if (_groundDetec.IsGrounded)
+            {
+                velcocity.y = _jumpSpeed;
+            }
         }
 
         _rigidbody.velocity = velcocity;
