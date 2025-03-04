@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [Header("Set In Inspector")]
     [SerializeField] private float _speed = 3f;
     [SerializeField] private float _jumpSpeed = 3f;
 
