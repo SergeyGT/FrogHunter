@@ -67,7 +67,7 @@ public class Player : MonoBehaviour
     {
         _animator.SetBool("Hit", obj);
         Picked();
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(2.1f);
         Death?.Invoke();
         Destroy(this.gameObject);
     }
