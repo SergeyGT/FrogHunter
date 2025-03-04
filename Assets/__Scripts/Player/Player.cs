@@ -48,8 +48,8 @@ public class Player : MonoBehaviour
             if (_groundDetec.IsGrounded)
             {
                 velcocity.y = _jumpSpeed;
-                _animator.SetBool("Jump", true);
-            } else _animator.SetBool("Jump", false);
+                //StartCoroutine(WaitJumpAnim());  
+            } 
         }
 
         _rigidbody.velocity = velcocity;
@@ -77,6 +77,13 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(2.1f);
         Death?.Invoke();
         Destroy(this.gameObject);
+    }
+
+    private IEnumerator WaitJumpAnim()
+    {
+        _animator.SetBool("Jump", true);
+        yield return new WaitForSeconds(1.5f);
+        _animator.SetBool("Jump", false);
     }
 
     private void Picked()
