@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float _landingSmoothTime = 0.1f;
     [SerializeField] private int _maxJumps = 2;
     [SerializeField] private ParticleSystem _doubleJump;
+    [SerializeField] private float _distanceToFan;
 
     private Rigidbody2D _rigidbody;
     private GroundDetec _groundDetec;
@@ -92,6 +93,19 @@ public class Player : MonoBehaviour
         }
 
         _rigidbody.velocity = velocity;
+    }
+
+    private void FixedUpdate()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, _distanceToFan, LayerMask.GetMask("Fan"));
+        Debug.DrawRay(transform.position, Vector2.down * _distanceToFan, Color.red);
+  
+        if (hit.collider != null && hit.collider.gameObject.CompareTag("Fan"))
+        {
+                Vector2 velocity = _rigidbody.velocity;
+                velocity.y = 5f;
+                _rigidbody.velocity = velocity;
+        }
     }
 
     private void OnEnable()
