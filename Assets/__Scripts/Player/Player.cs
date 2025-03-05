@@ -103,7 +103,7 @@ public class Player : MonoBehaviour
         if (hit.collider != null && hit.collider.gameObject.CompareTag("Fan"))
         {
                 Vector2 velocity = _rigidbody.velocity;
-                velocity.y = 5f;
+            velocity.y = Mathf.Lerp(velocity.y, 5f, 0.6f);
                 _rigidbody.velocity = velocity;
         }
     }
