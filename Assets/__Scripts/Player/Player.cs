@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -8,11 +7,18 @@ public class Player : MonoBehaviour
     [Header("Set In Inspector")]
     [SerializeField] private float _speed = 3f;
     [SerializeField] private float _jumpSpeed = 3f;
+    [SerializeField] private float _gravityScale = 2f;
+    [SerializeField] private float _coyoteTime = 0.1f;
+    [SerializeField] private float _landingSmoothTime = 0.1f;
+    [SerializeField] private int _maxJumps = 2;
 
     private Rigidbody2D _rigidbody;
     private GroundDetec _groundDetec;
     private Animator _animator;
     private SpriteRenderer _spriteRenderer;
+
+    private float _coyoteTimer;
+    private int _jumpCount = 1;
 
     public static event Action Death;
 
@@ -26,33 +32,58 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        Vector2 velcocity = _rigidbody.velocity;
-
-        velcocity.x = 0;
+        Vector2 velocity = _rigidbody.velocity;
+        velocity.x = 0;
 
         if (Input.GetKey(KeyCode.A))
         {
-            velcocity.x = -_speed ;
+            velocity.x = -_speed;
             _spriteRenderer.flipX = true;
             _animator.SetBool("Run", true);
         }
-        else if(Input.GetKey(KeyCode.D)) 
+        else if (Input.GetKey(KeyCode.D))
         {
-            velcocity.x = _speed;
+            velocity.x = _speed;
             _spriteRenderer.flipX = false;
             _animator.SetBool("Run", true);
-        } else _animator.SetBool("Run", false);
-
-        if (Input.GetKey(KeyCode.W))
+        }
+        else
         {
-            if (_groundDetec.IsGrounded)
-            {
-                velcocity.y = _jumpSpeed;
-                //StartCoroutine(WaitJumpAnim());  
-            } 
+            _animator.SetBool("Run", false);
         }
 
-        _rigidbody.velocity = velcocity;
+        
+        if (_groundDetec.IsGrounded)
+        {
+            _coyoteTimer = _coyoteTime;
+            _jumpCount = 0;
+        }
+        else
+        {
+            _coyoteTimer -= Time.deltaTime;
+        }
+
+        
+        if (Input.GetKeyDown(KeyCode.W) && (_coyoteTimer > 0 || _jumpCount < _maxJumps - 1))
+        {
+            velocity.y = _jumpSpeed;
+            _jumpCount++; 
+            _coyoteTimer = 0; 
+        }
+
+       
+        if (!_groundDetec.IsGrounded)
+        {
+            velocity.y += Physics2D.gravity.y * (_gravityScale - 1) * Time.deltaTime;
+        }
+
+        
+        if (_groundDetec.IsGrounded && velocity.y < 0)
+        {
+            velocity.y = Mathf.Lerp(velocity.y, 0, _landingSmoothTime);
+        }
+
+        _rigidbody.velocity = velocity;
     }
 
     private void OnEnable()
@@ -79,17 +110,9 @@ public class Player : MonoBehaviour
         Destroy(this.gameObject);
     }
 
-    private IEnumerator WaitJumpAnim()
-    {
-        _animator.SetBool("Jump", true);
-        yield return new WaitForSeconds(1.5f);
-        _animator.SetBool("Jump", false);
-    }
-
     private void Picked()
     {
         Vector2 velocity = new Vector2(0, 5);
         _rigidbody.velocity = velocity;
     }
-
 }
