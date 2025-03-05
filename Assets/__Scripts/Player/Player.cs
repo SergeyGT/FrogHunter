@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float _coyoteTime = 0.1f;
     [SerializeField] private float _landingSmoothTime = 0.1f;
     [SerializeField] private int _maxJumps = 2;
+    [SerializeField] private ParticleSystem _doubleJump;
 
     private Rigidbody2D _rigidbody;
     private GroundDetec _groundDetec;
@@ -66,7 +67,14 @@ public class Player : MonoBehaviour
         
         if (Input.GetKeyDown(KeyCode.W) && (_coyoteTimer > 0 || _jumpCount < _maxJumps - 1))
         {
-            velocity.y = _jumpSpeed;
+            if (_jumpCount == 2) 
+            { 
+                velocity.y = _jumpSpeed * 0.8f;
+                ParticleSystem effect = Instantiate(_doubleJump, transform.position, Quaternion.identity);
+                effect.Play();
+                Destroy(effect.gameObject, 1f);
+            }
+            else velocity.y = _jumpSpeed;
             _jumpCount++; 
             _coyoteTimer = 0; 
         }
