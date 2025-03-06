@@ -175,6 +175,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 6
   _jumpSpeed: 7
+  _gravityScale: 2
+  _coyoteTime: 0.1
+  _landingSmoothTime: 0.1
+  _maxJumps: 2
+  _doubleJump: {fileID: 3609637512352698858, guid: 15f7e7ce1b5c44b4583a1816d014b2b2, type: 3}
+  _distanceToFan: 0
 --- !u!95 &5754068961609188162
 Animator:
   serializedVersion: 5
